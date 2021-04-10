@@ -1,9 +1,21 @@
 <?php
 $start = "http://localhost:8888/Bakery_Search_Engine/sites.html";
 
+$already_crawled = array();
+
+function get_details ($url){
+
+}
+
 function follow($url) {
+
+    global $already_crawled;
+
+    $options = array('http' =>array('method'=>"GET", 'headers'=>"User-Agent: BakeryBot/0.1\n"));
+    $context = stream_context_create($options);
+
     $doc = new DOMDocument();
-    $doc->loadHTML(file_get_contents($url));
+    $doc->loadHTML(file_get_contents($url, false, $context));
 
     $links = $doc->getElementsByTagName("a");
 
@@ -26,10 +38,15 @@ function follow($url) {
              $l = parse_url($url)["scheme"]."://".parse_url($url)["host"]."/".$l;
                  }
 
+        if (!in_array($l, $already_crawled)) {
+            $already_crawled[] = $l;
+            //echo get_details($l);
+            echo $l."\n";
+        }
 
-        echo $l."\n";
     }
 
 }
 
 follow($start);
+print_r($already_crawled);
