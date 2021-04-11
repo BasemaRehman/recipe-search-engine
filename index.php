@@ -1,21 +1,48 @@
 <?php
-$start = "http://localhost:8888/Bakery_Search_Engine/sites.html";
+$start = "https://google.com";
 
 $already_crawled = array();
+$crawling = array();
+
 
 function get_details ($url){
+     $options = array('http' =>array('method'=>"GET", 'headers'=>"User-Agent: BakeryBot/0.1\n"));
+     $context = stream_context_create($options);
+
+     $doc = new DOMDocument();
+     @$doc->loadHTML(@file_get_contents($url, false, $context));
+
+     $title = $doc->getElementsByTagName("title");
+     $title = $title->item(0)->nodeValue;
+
+     $description = "";
+     $keywords = "";
+     $metas = $doc->getElementsByTagName("meta");
+     for($i = 0; $i<$metas->length; $i++){
+        $meta = $metas->item($i);
+
+        if (strtolower($meta->getAttribute("name")) == "description")
+            $description = $meta->getAttribute("content");
+        if (strtolower($meta->getAttribute("name")) == "keywords")
+            $keywords = $meta->getAttribute("content");
+
+      }
+
+
+	return '{ "Title": "'.str_replace("\n", "", $title).'", "Description": "'.str_replace("\n", "", $description).'", "Keywords": "'.str_replace("\n", "", $keywords).'", "URL": "'.$url.'"},';
 
 }
 
 function follow($url) {
 
     global $already_crawled;
+    global $crawling;
 
     $options = array('http' =>array('method'=>"GET", 'headers'=>"User-Agent: BakeryBot/0.1\n"));
     $context = stream_context_create($options);
 
     $doc = new DOMDocument();
-    $doc->loadHTML(file_get_contents($url, false, $context));
+    @$doc->loadHTML(@file_get_contents($url, false, $context));
 
     $links = $doc->getElementsByTagName("a");
 
@@ -40,10 +67,15 @@ function follow($url) {
 
         if (!in_array($l, $already_crawled)) {
             $already_crawled[] = $l;
-            //echo get_details($l);
-            echo $l."\n";
+            $crawling[] = $l;
+            echo get_details($l)."\n";
+            //echo $l."\n";
         }
 
+    }
+    array_shift($crawling);
+    foreach ($crawling as $site) {
+        follow($site);
     }
 
 }

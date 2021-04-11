@@ -1,7 +1,7 @@
 # recipe-search-engine
 
-Currently implementing a web crawler to find and store relevant websites
-Deals with multiple types of links
+02/05/21 - Implementing Web crawler to take care of links
+11/05/21 - Web Crawler Implemented. Retrieves title, description, keywords and url of site
 
 To run: php index.php
 
