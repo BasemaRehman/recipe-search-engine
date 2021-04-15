@@ -5,14 +5,6 @@ $pdo = new PDO('mysql:host=127.0.0.1;port=8889;dbname=RecipeSearch;', 'root', 'r
 $crawled_site = array();
 $crawling = array();
 
-function add_test(){
-    global $pdo;
-    $dat = ['id' => '2', 'text' => 'newtext',];
-    $sql = "INSERT INTO test (id, text) VALUES (:id,:text)";
-    $stmt= $pdo->prepare($sql);
-    $stmt->execute($dat);
-}
-
 function get_details($url) {
 
 	$options = array('http'=>array('method'=>"GET", 'headers'=>"User-Agent: howBot/0.1\n"));
@@ -67,14 +59,25 @@ function follow($url) {
 				$crawled_site[] = $l;
 				$crawling[] = $l;
 				$details = json_decode(get_details($l));
+				echo $details->Keywords;
 
 
 				$details->URL;
 				$rows = $pdo->query("SELECT * FROM `recipe_index` WHERE url= '$details->URL'");
 				$rows = $rows->fetchColumn();
 
+				$data = ['title' => $details->Title, 'description' => $details->Description, 'keywords' => $details->Keywords, 'url' => $details->URL, 'url_hash'=> md5($details->URL),];
 
+				if ($rows > 0){
+				    echo "UPDATE";
 
+				} else {
+				// This adds in a new row to the database. Even though there is an id column, it is autoincremented so
+				// need to set a value in the code
+                    $sql = "INSERT INTO recipe_index (title, description, keywords, url, url_hash) VALUES (:title,:description,:keywords,:url,:url_hash)";
+                    $stmt= $pdo->prepare($sql);
+                    $stmt->execute($data);
+				}
 		}
 
 	}
@@ -85,4 +88,4 @@ function follow($url) {
 	}
 
 }
-add_test();
+follow($start);
