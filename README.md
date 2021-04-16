@@ -6,5 +6,8 @@
 
 15/04/21 - Database updating correctly (Indexing stage)
 
+16/04/21 - Search page created successfully, url links working
+
 To run: php index.php
 
+For additional updates - http://mrbool.com/how-to-create-your-own-search-engine-with-php-and-mysql/32733
