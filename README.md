@@ -8,6 +8,8 @@
 
 16/04/21 - Search page created successfully, url links working
 
+08/05/21 - Design changes, research into improving results
+
 To run: php index.php
 
 For additional updates - http://mrbool.com/how-to-create-your-own-search-engine-with-php-and-mysql/32733
