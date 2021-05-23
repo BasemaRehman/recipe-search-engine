@@ -12,9 +12,9 @@ $params = array();
 foreach ($searche as $term){
     $x++;
     if ($x == 1) {
-        $construct .= "title LIKE CONCAT('%',:search$x,'%') OR description LIKE CONCAT('%',:search$x,'%') or keywords LIKE CONCAT('%',:search$x,'%')";
+        $construct .= "title LIKE CONCAT('%',:search$x,'%') or keywords LIKE CONCAT('%',:search$x,'%')";
     } else {
-        $construct .= " AND title LIKE CONCAT('%',:search$x,'%') OR description LIKE CONCAT('%',:search$x,'%') or keywords LIKE CONCAT('%',:search$x,'%')";
+        $construct .= " AND title LIKE CONCAT('%',:search$x,'%') or keywords LIKE CONCAT('%',:search$x,'%')";
     }
     $params["search$x"] = $term;
 }
