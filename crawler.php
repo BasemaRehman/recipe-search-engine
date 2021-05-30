@@ -1,7 +1,15 @@
 <?php
 $start = "http://localhost:8888/Bakery_Search_Engine/sites.html";
-$pdo = new PDO('mysql:host=127.0.0.1;port=8889;dbname=RecipeSearch;', 'root', 'root');
+$ini = parse_ini_file('app.ini');
+$name = $ini['db_name'];
+$port = $ini['db_port'];
+$host = $ini['db_host'];
 
+try {
+    $pdo = new PDO("mysql:host=$host;port=$port;dbname=$name;", $ini['db_user'], $ini['db_password']);
+} catch (PDOException $e) {
+    echo 'Connection failed: ' . $e->getMessage();
+}
 $crawled_site = array();
 $crawling = array();
 
@@ -25,7 +33,7 @@ function get_details($url) {
 			$keywords = $meta->getAttribute("content");
 
 	}
-	return '{ "Title": "'.str_replace("\n", "", $title).'", "Description": "'.str_replace("\n", "", $description).'", "Keywords": "'.str_replace("\n", "", $keywords).'", "URL": "'.$url.'"}';
+	return '{ "Title": "'.str_replace("\n", "", $title).'", "Description": "'.str_replace("\n", "", $description).'", "Keywords": "'.str_replace("\n", "", $keywords).'", "URL": "'.$url.'"}' ;
 
 }
 
@@ -66,7 +74,7 @@ function follow($url) {
 				$rows = $pdo->query("SELECT * FROM `recipe_index` WHERE url= '$details->URL'");
 				$rows = $rows->fetchColumn();
 
-				$data = ['title' => $details->Title, 'description' => $details->Description, 'keywords' => $details->Keywords, 'url' => $details->URL, 'url_hash'=> md5($details->URL),];
+				$data = ['title' => $details->Title, 'description' => $details->Description, 'keywords' => $details->Keywords, 'url' => $details->URL, 'url_hash'=> md5($details->URL)];
 
 				if ($rows > 0){
 				    if (!is_null($data['title']) && !is_null($data['description']) && $data['title'] != ''){
