@@ -23,9 +23,9 @@ $results = $pdo->prepare("SELECT * FROM `recipe_index` WHERE $construct");
 $results->execute($params);
 
 if ($results->rowCount() == 0){
-    echo "0 results found";
+    echo "0 results found <center>Sorry, there are no suitable results for your search</center>";
 } else {
-    echo $results->rowCount()." results found! <hr />";
+    echo $results->rowCount()." results found! <center>Here are your results!</center> <hr />";
 }
 foreach ($results->fetchAll() as $result){
     $title = $result ['title'];
@@ -36,7 +36,7 @@ foreach ($results->fetchAll() as $result){
     }
 
     $url = $result ['url'];
-    echo "<a href='$url'> $title </a> <br> $desc <br> <a href='$url'> $url </a><hr />";
+    echo "<p style='margin-left: 40px'><a href='$url'> $title </a> <br> $desc <br> <a href='$url'> <i>$url</i> </a><hr /></p>";
 
 
 }
